@@ -1,0 +1,25 @@
+{
+  "name": "climb",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite --mode development",
+    "build": "vite build --mode production",
+    "preview": "vite preview"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "express": "^5.1.0",
+    "pixi.js": "^8.12.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "dotenv": "^16.3.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}
