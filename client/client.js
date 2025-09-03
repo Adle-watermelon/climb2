@@ -12,21 +12,7 @@ import { Inventory } from './module/Inventory.js';
 import { Ranking } from './module/Ranking.js';
 import { RankingTape } from './module/RankingTape.js';
 import { Background } from "./module/Background.js";
-// socket.io準備（Pixi起動後にも使えるように外に出す）
-function getSocketURL() {
-  const config = window.gameConfig?.socketURL;
-  if (config && config !== 'auto') {
-    return config; // 具体的なURLが指定されている場合
-  }
-  // 'auto'の場合は現在のホストを使用
-  const protocol = window.location.protocol;
-  const hostname = window.location.hostname;
-  const port = 3000;
-  
-  return `${protocol}//${hostname}${port ? ':' + port : ''}`;
-}
-const SOCKET_URL = getSocketURL();
-const socket = io(SOCKET_URL);
+const socket = io();
 let isConnected = false;
 let connectionStatus = 'connecting';
 function showConnectionStatus(status, message) {
