@@ -1,4 +1,4 @@
-import { CharaCore } from './CharaCore.js'
+import { CharaCore } from '../client/coremodule/CharaCore.js'
 export class Chara extends CharaCore {
     constructor(id, x, y, direction = "right", status = "idle"){
         super(id, x, y, direction, status);

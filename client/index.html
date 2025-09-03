@@ -2,10 +2,29 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.4, maximum-scale=0.4, user-scalable=no">
+
   <title>■Climb</title>
   <!-- ドット絵風フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    input, textarea {
+  font-size: 16px !important;
+}
+* {
+  -webkit-touch-callout: none; /* 長押しメニュー禁止 */
+  -webkit-user-select: none;   /* テキスト選択禁止 */
+  user-select: none;
+}
+html, body {
+  overflow: hidden;  /* スクロール禁止 */
+  overscroll-behavior: none; /* iOSでのバウンス抑制 */
+  height: 100%;
+  margin: 0;
+}
+* {
+  -webkit-tap-highlight-color: transparent;
+}
     body {
       margin: 0;
       padding: 0;
@@ -110,6 +129,9 @@
 
     nameInput.value = newvalue;
   });
+  document.addEventListener("touchmove", function(e) {
+  if (e.scale !== 1) { e.preventDefault(); } // ピンチズーム防止
+}, { passive: false });
 </script>
 
 </body>

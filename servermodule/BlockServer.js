@@ -1,4 +1,4 @@
-import {size, charaheight, charawidth, synfps} from './Constants.js'
+import { charaheight, charawidth, synfps} from './Constants.js'
 
 export class Block {
   constructor(type = "air",timer = 0) {

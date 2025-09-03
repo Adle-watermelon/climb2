@@ -4,10 +4,10 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Chara } from './module/CharaServer.js'
-import { synfps, scale, charaheight, charawidth } from './module/Constants.js'
-import { ChunkManager } from './module/Chunk_ManagerServer.js';
-import { updatePlayerMovement } from './module/Physics.js';
+import { Chara } from './servermodule/CharaServer.js'
+import { synfps, scale, charaheight, charawidth } from './servermodule/Constants.js'
+import { ChunkManager } from './servermodule/Chunk_ManagerServer.js';
+import { updatePlayerMovement } from './servermodule/Physics.js';
 const app = express();
 const fps = 60;
 const __filename = fileURLToPath(import.meta.url);

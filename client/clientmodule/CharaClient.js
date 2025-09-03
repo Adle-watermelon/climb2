@@ -1,26 +1,24 @@
-import { CharaCore } from './CharaCore.js'
-import * as PIXI from 'pixi.js'
-import {size, charaheight, charawidth} from './Constants.js'
-
+import { CharaCore } from '../coremodule/CharaCore.js'
+import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
+import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Chara extends CharaCore {
     static cameraContainer = null;
-    static textures = {}; // テクスチャキャッシュ
+    static textures = new Map(); // テクスチャキャッシュ
     
-    static initialization(cameraContainer){
+    static async initialization(cameraContainer){
         Chara.cameraContainer = cameraContainer;
         // テクスチャを事前読み込み
-        Chara.loadTextures();
+        Chara.textures.set('walk1', await PIXI.Assets.load('./assets/walk1.png'));
+        Chara.textures.set('walk2', await PIXI.Assets.load('./assets/walk2.png'));
+        Chara.textures.set('walk3', await PIXI.Assets.load('./assets/walk3.png'));
+        Chara.textures.set('idle', await PIXI.Assets.load('./assets/idle.png'));
+        Chara.textures.set('jump', await PIXI.Assets.load('./assets/jump.png'));
+        Chara.textures.set('slip', await PIXI.Assets.load('./assets/slip.png'));
     }
     
     static async loadTextures() {
         const textureNames = ['walk1', 'walk2', 'walk3', 'idle', 'jump', 'slip'];
-        for (const name of textureNames) {
-            try {
-                Chara.textures[name] = await PIXI.Assets.load(`./assets/${name}.png`);
-            } catch (error) {
-                console.warn(`Failed to load texture: ${name}.png`, error);
-            }
-        }
+
     }
     
     constructor(id, x, y, direction = "right", status = "idle"){
@@ -58,7 +56,7 @@ export class Chara extends CharaCore {
             // 名前テキスト追加
             this.nameText = new PIXI.Text(this.name, {
                 fontFamily: '"Press Start 2P", monospace',
-                fontSize: 14,
+                fontSize: fontSize -1,
                 fill: 0xffffff,
                 align: "center"
             });
@@ -103,11 +101,11 @@ export class Chara extends CharaCore {
         }
 
         // テクスチャ反映
-        if (Chara.textures[textureName]) {
-            this.sprite.texture = Chara.textures[textureName];
+        if (Chara.textures.has(textureName)) {
+            this.sprite.texture = Chara.textures.get(textureName);
             this.sprite.width = size * charawidth;
             this.sprite.height = size * charaheight;
-        }
+        }else{console.log("aaaaaaa")}
     }
 
     destroy() {
