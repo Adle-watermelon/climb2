@@ -26,7 +26,7 @@ const app = express();
 app.use(express.static(__dirname + '/client'));
 const staticServer = createServer(app);
 staticServer.listen(80, () => {
-  console.log("Static server running: http://localhost:80");
+  console.log("Static server running: " + __dirname + ":80");
 });
 const playerInputStates = new Map();
 let charas = new Map();
