@@ -24,9 +24,12 @@ const io = new Server(httpServer, {
 });
 const app = express();
 app.use(express.static(__dirname + '/client'));
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/client/index.html");
+});
 const staticServer = createServer(app);
 staticServer.listen(80, () => {
-  console.log("Static server running: " + __dirname + ":80");
+  console.log("Static server running");
 });
 const playerInputStates = new Map();
 let charas = new Map();
