@@ -12,6 +12,8 @@ import { Inventory } from './module/Inventory.js';
 import { Ranking } from './module/Ranking.js';
 import { RankingTape } from './module/RankingTape.js';
 import { Background } from "./module/Background.js";
+import JoyStickManager from "./module/JoystickManager.js";
+
 const socket = io();
 let isConnected = false;
 let connectionStatus = 'connecting';
@@ -92,6 +94,7 @@ let ranking = [];
 // ==========================
 // ゲーム開始関数
 // ==========================
+
 async function startGame(playerName) {
   if (!isConnected) {
     alert('サーバーに接続されていません。しばらく待ってから再試行してください。');
@@ -101,7 +104,7 @@ async function startGame(playerName) {
   // タイトル画面を消す
   document.getElementById('title-screen').style.display = 'none';
   unshowConnectionStatus();
-  // ゲーム画面を表示
+    // ゲーム画面を表示
   const container = document.getElementById('game-container');
   container.style.display = 'block';
 
@@ -115,6 +118,8 @@ async function startGame(playerName) {
     forceCanvas: true,
   });
   container.appendChild(app.canvas);
+  const joystick = new JoyStickManager(app, app.view.width/2 - 200, app.view.height/2 + 200);
+
   // ====== ここからは今までの処理をそのまま移植 ======
   cameraContainer = new PIXI.Container();
   app.stage.addChild(cameraContainer);
@@ -184,6 +189,10 @@ async function startGame(playerName) {
     });
         // マウスクリックイベントリスナーを追加
     app.canvas.addEventListener('click', (event) => {
+          if (joystick.keys.W) console.log("UP");
+  if (joystick.keys.S) console.log("DOWN");
+  if (joystick.keys.A) console.log("LEFT");
+  if (joystick.keys.D) console.log("RIGHT");
         const rect = app.view.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
@@ -217,7 +226,6 @@ async function startGame(playerName) {
         //ついでにブロック更新
         chunkmanager.update();
     }, 1000/synfps);
-    createVirtualController(app, inputManager);
     app.ticker.add(() => {
         rankingTape.update(ranking, { x: player.x * size, y: player.y * size });
         if(inventory.items.stone != player.haveblock){
@@ -307,73 +315,3 @@ document.addEventListener("DOMContentLoaded", () => {
     startGame(playerName);
   });
 });
-// ==========================
-// 仮想コントローラ（スマホ用）
-// ==========================
-function createVirtualController(app, inputManager) {
-  const controllerContainer = new PIXI.Container();
-  controllerContainer.zIndex = 9999; // 常に最前面
-  app.stage.addChild(controllerContainer);
-
-  const btnSize = 80;
-  const btnAlpha = 0.4;
-
-  // 汎用ボタン作成関数
-  function createButton(x, y, direction) {
-    const g = new PIXI.Graphics();
-    g.beginFill(0xaaaaaa, btnAlpha);
-    g.drawCircle(0, 0, btnSize / 2); // 背景
-    g.endFill();
-
-    // 矢印（三角形）
-    g.beginFill(0xffffff, 0.8);
-    g.moveTo(0, -20);
-    g.lineTo(15, 10);
-    g.lineTo(-15, 10);
-    g.closePath();
-    g.endFill();
-
-    g.x = x;
-    g.y = y;
-    g.interactive = true;
-    g.cursor = "pointer";
-
-    // 押下イベント
-    g.on("pointerdown", () => {
-      inputManager.currentState[direction] = true;
-    });
-    g.on("pointerup", () => {
-      inputManager.currentState[direction] = false;
-    });
-    g.on("pointerupoutside", () => {
-      inputManager.currentState[direction] = false;
-    });
-
-    // 向き調整
-    if (direction === "left") g.rotation = -Math.PI / 2;
-    if (direction === "right") g.rotation = Math.PI / 2;
-    if (direction === "up") g.rotation = 0;
-
-    controllerContainer.addChild(g);
-    return g;
-  }
-
-  // 配置（画面下に固定）
-  const padding = 30;
-  const screenH = app.renderer.height;
-  const screenW = app.renderer.width;
-
-  createButton(padding + btnSize, screenH - padding - btnSize, "left");
-  createButton(padding + btnSize * 2.5, screenH - padding - btnSize, "right");
-  createButton(screenW - padding - btnSize, screenH - padding - btnSize, "up");
-
-  // リサイズ対応
-  window.addEventListener("resize", () => {
-    const screenH = app.renderer.height;
-    const screenW = app.renderer.width;
-    controllerContainer.children.forEach((btn) => controllerContainer.removeChild(btn));
-    createButton(padding + btnSize, screenH - padding - btnSize, "left");
-    createButton(padding + btnSize * 2.5, screenH - padding - btnSize, "right");
-    createButton(screenW - padding - btnSize, screenH - padding - btnSize, "up");
-  });
-}
