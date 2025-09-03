@@ -42,6 +42,17 @@ function createStatusDiv() {
   document.body.appendChild(div);
   return div;
 }
+let scroll = 0;
+
+window.addEventListener("wheel", (event) => {
+  // 上スクロールでプラス、下スクロールでマイナス
+  scroll += event.deltaY > 0 ? 1 : -1;
+
+  // 必要なら範囲制限
+  // scroll = Math.max(0, scroll);
+
+  console.log("scroll:", scroll);
+});
 socket.on('connect', () => {
     console.log('✅ Connected to server');
     isConnected = true;
@@ -254,10 +265,13 @@ async function startGame(playerName) {
         inputManager.update();
         updatePlayerMovement(player, inputManager.currentState, app.ticker.deltaMS/1000,chunkmanager)
         player.drawChara(cameraContainer);
-        bg.update(player.x,player.y);
+        bg.update(player.x,player.y + scroll);
         updateCamera(app,cameraContainer, player);
+        cameraContainer.y -= scroll * size;
         //チャンクリクエスト
+        player.y +=scroll
         const cpos = player.getchunkpos();
+        player.y -=scroll
         for(var i=0;i<=0;i++){
             for(var j=-3;j<=3;j++){
                 chunkmanager.requestChunk(cpos.x + i,cpos.y + j) //ここでリクエスト
