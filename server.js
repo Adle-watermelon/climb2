@@ -52,7 +52,7 @@ setInterval(() => {
 }, scale*1000/synfps);
 setInterval(() => {
   for(const [id,chara] of charas){
-    chara.haveblock += 1;
+    chara.haveblock += 5;
     const socket = io.sockets.sockets.get(id);
     if(socket){
       socket.emit('haveblock', {haveblock:chara.haveblock})

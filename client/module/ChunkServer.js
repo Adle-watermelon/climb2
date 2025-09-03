@@ -8,8 +8,8 @@ export class Chunk {
     );
     for(var i = 0;i<16;i++){
         for(var j = 0;j<16;j++){
-            this.blocks[i][j].type = (!(this.x!=0) || i + this.y*16 >=3) ? 'stone' : 'air'
-            this.blocks[i][j].timer = (!(this.x!=0) || i + this.y*16 >=3) ? 1000000 : 0
+            this.blocks[i][j].type = (Math.abs(this.x*16 + j) > 8 || i + this.y*16 >=3) ? 'stone' : 'air'
+            this.blocks[i][j].timer = (Math.abs(this.x*16 + j) > 8 || i + this.y*16 >=3) ? 1000000 : 0
         }
     }
   }
