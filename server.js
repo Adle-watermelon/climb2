@@ -25,7 +25,7 @@ const io = new Server(httpServer, {
 const app = express();
 app.use(express.static(__dirname + '/client'));
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/client/index.html");
+  res.send("/client/index.html");
 });
 const staticServer = createServer(app);
 staticServer.listen(80, () => {
