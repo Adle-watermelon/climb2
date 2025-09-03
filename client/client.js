@@ -126,11 +126,12 @@ async function startGame(playerName) {
     const rankingUI = new Ranking(app);
 
     const bg = new Background(app, [
+    { start: -16, end: 0, texture: './assets/bg_ground.png'},
     { start: 0, end: 20, texture: './assets/bg_city.png' },
     { start: 20, end: 100, texture: './assets/bg_clouds.png' },
     { start: 100, end: null, texture: './assets/bg_space.png' }
     ]);
-  player = new Chara(socket.id, 0, 0);
+  player = new Chara(socket.id, 7, 0);
   player.name = playerName;
   const inventory = new Inventory(playerName);
   inputManager = new WASDInputManager(socket);
@@ -247,7 +248,7 @@ async function startGame(playerName) {
         updateCamera(app,cameraContainer, player);
         //チャンクリクエスト
         const cpos = player.getchunkpos();
-        for(var i=-3;i<=3;i++){
+        for(var i=0;i<=0;i++){
             for(var j=-3;j<=3;j++){
                 chunkmanager.requestChunk(cpos.x + i,cpos.y + j) //ここでリクエスト
             }

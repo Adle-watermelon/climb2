@@ -45,6 +45,8 @@ export class Block {
       this.sprite.height = size;
       Block.cameraContainer.addChild(this.sprite);
     }
+    if (newType === 'void'){
+    }
   }
   
   setPosition(x, y) {

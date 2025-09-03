@@ -1,8 +1,8 @@
 import {size, charaheight, charawidth} from './Constants.js'
 const G = 0.5;
 const maxvy = 9.0;
-const initialJumpVelocity = 10.0;  // 初期ジャンプ速度（即時）
-const maxAirTime = 0.8;            // 最大滞空時間（秒）
+const initialJumpVelocity = 11.0;  // 初期ジャンプ速度（即時）
+const maxAirTime = 1.2;            // 最大滞空時間（秒）
 const minAirTime = 0.1;            // 最小滞空時間（秒）
 export function updatePlayerMovement(player, keystate, delta, chunkmanager) {
     const moveSpeed = 6;
@@ -148,21 +148,21 @@ export function updatePlayerMovement(player, keystate, delta, chunkmanager) {
     }
     
     // 当たり判定
-        if(chunkmanager.getBlock(player.x + charawidth/2,player.y - charaheight/2) === 'stone' || chunkmanager.getBlock(player.x + charawidth/2,player.y - charaheight) === 'stone' || chunkmanager.getBlock(player.x + charawidth/2,player.y - 0.01) === 'stone'){
+        if(chunkmanager.getBlock(player.x + charawidth/2,player.y - charaheight/2) !='air' || chunkmanager.getBlock(player.x + charawidth/2,player.y - charaheight) !='air' || chunkmanager.getBlock(player.x + charawidth/2,player.y - 0.01) !='air'){
             player.x = Math.floor(player.x) + (1 - charawidth/2)
             player.vx = 0.0;
         }
-        if(chunkmanager.getBlock(player.x - charawidth/2,player.y - charaheight/2) === 'stone' || chunkmanager.getBlock(player.x - charawidth/2,player.y - charaheight) === 'stone' || chunkmanager.getBlock(player.x - charawidth/2,player.y - 0.01) === 'stone'){
+        if(chunkmanager.getBlock(player.x - charawidth/2,player.y - charaheight/2) !='air' || chunkmanager.getBlock(player.x - charawidth/2,player.y - charaheight) !='air' || chunkmanager.getBlock(player.x - charawidth/2,player.y - 0.01) !='air'){
             player.x = Math.floor(player.x) + charawidth/2
             player.vx = 0.0
         }
         player.y += player.vy * delta;
-        if(chunkmanager.getBlock(player.x - charawidth/2 + 0.01,player.y - charaheight) === 'stone' || chunkmanager.getBlock(player.x + charawidth/2 - 0.01,player.y - charaheight) === 'stone'){
+        if(chunkmanager.getBlock(player.x - charawidth/2 + 0.01,player.y - charaheight) !='air' || chunkmanager.getBlock(player.x + charawidth/2 - 0.01,player.y - charaheight) !='air'){
             player.y = Math.floor(player.y) - 1 + charaheight
             player.vy = 0.0;
             player.jumpinterval = 0.0;
         }
-        if (chunkmanager.getBlock(player.x - charawidth/2 + 0.01,player.y) === 'stone' || chunkmanager.getBlock(player.x + charawidth/2 - 0.01,player.y) === 'stone' ) {
+        if (chunkmanager.getBlock(player.x - charawidth/2 + 0.01,player.y) !='air' || chunkmanager.getBlock(player.x + charawidth/2 - 0.01,player.y) !='air' ) {
             player.OnGround = true;
             player.vy = 0.0;
             player.y = Math.floor(player.y);

@@ -52,7 +52,7 @@ setInterval(() => {
 }, scale*1000/synfps);
 setInterval(() => {
   for(const [id,chara] of charas){
-    chara.haveblock += 5;
+    chara.haveblock += 4;
     const socket = io.sockets.sockets.get(id);
     if(socket){
       socket.emit('haveblock', {haveblock:chara.haveblock})
@@ -62,7 +62,7 @@ setInterval(() => {
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
-  let chara = new Chara(socket.id, 0, 0)
+  let chara = new Chara(socket.id, 7, 0)
   charas.set(socket.id,chara)
       // WASD入力を受信
   socket.on('playerInput', (data) => {

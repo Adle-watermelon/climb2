@@ -21,18 +21,19 @@ export class Background {
       // 横ループ用に3枚並べる
       
       const group = [];
-      const height = layer.end
+      let height = layer.end
         ? (layer.end - layer.start) * size
         : this.app.renderer.height * 2;
-      const width = texture.width * (height/texture.height);
+        if(layer.end == 0){height = (layer.end - layer.start) * size}
+      const width = 16 * size;
 
 
-      for (let i = -this.loop; i <= this.loop; i++) {
+      for (let i = 0; i <= 0; i++) {
         const sprite = new PIXI.Sprite(texture);
         sprite.width = width;
         sprite.height = height;
         sprite.x = i * width;
-        sprite.y = -layer.end * size; // Y方向の配置
+        sprite.y = layer.end ? -layer.end * size : -layer.start * size - sprite.height ; // Y方向の配置
         this.container.addChild(sprite);
         group.push(sprite);
       }
@@ -59,7 +60,7 @@ export class Background {
       const offsetX = -((worldPixelX % width) + width) % width;
 
       for (let i = 0; i < group.length; i++) {
-        group[i].x = offsetX + (i - this.loop) * width + screenCenterX;
+        group[i].x = offsetX + (i ) * width + screenCenterX;
       }
     }
   }
