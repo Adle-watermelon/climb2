@@ -226,8 +226,9 @@ async function startGame(playerName) {
     if(isMobile()){scroll = 1;}
 app.canvas.addEventListener('touchstart', (event) => {
     if (!isMobile()) return;
+    const previousactive = joystick.active
     setTimeout(() => {
-    if(!joystick.active){
+    if(!joystick.active || ((previousactive) && joystick.active)){
     console.log("📱 touchstart");
 
     const rect = app.view.getBoundingClientRect();
