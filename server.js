@@ -62,6 +62,7 @@ setInterval(() => {
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
+  socket.on('gamestart', () => {
   let chara = new Chara(socket.id, 7, 0)
   charas.set(socket.id,chara)
       // WASD入力を受信
@@ -157,6 +158,7 @@ io.on('connection', (socket) => {
     console.log('プレイヤー切断:', socket.id);
     charas.delete(socket.id)
   });
+})
 });
 // ====================
 // サーバー起動
