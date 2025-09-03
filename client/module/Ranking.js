@@ -1,6 +1,6 @@
 // module/Ranking.js
 import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs';
-
+import { fontSize } from './Constants.js'
 export class Ranking {
   constructor(app) {
     this.app = app;
@@ -10,14 +10,14 @@ export class Ranking {
     this.background = new PIXI.Graphics();
     this.background.beginFill(0x000000, 0.6);
     this.background.lineStyle(2, 0xffffff, 1);
-    this.background.drawRoundedRect(0, 0, 280, 150, 10);
+    this.background.drawRoundedRect(0, 0, fontSize* 21, fontSize*12, 10);
     this.background.endFill();
     this.container.addChild(this.background);
 
     // タイトル（"Ranking"）
     this.title = new PIXI.Text("Ranking", {
       fontFamily: "Press Start 2P", // タイトル画面と同じフォントを想定
-      fontSize: 14,
+      fontSize: fontSize + 2,
       fill: "#ffffff",
     });
     this.title.x = 10;
@@ -29,11 +29,11 @@ export class Ranking {
     for (let i = 0; i < 3; i++) {
       const text = new PIXI.Text("", {
         fontFamily: "Press Start 2P",
-        fontSize: 12,
+        fontSize: fontSize,
         fill: "#ffff00",
       });
       text.x = 10;
-      text.y = 35 + i * 25;
+      text.y = 43 + i * (fontSize * 2 + 1);
       this.container.addChild(text);
       this.texts.push(text);
     }
@@ -41,20 +41,20 @@ export class Ranking {
     // 自分の位置表示用
     this.youText = new PIXI.Text("", {
       fontFamily: "Press Start 2P",
-      fontSize: 12,
+      fontSize: fontSize,
       fill: "#00ff00", // 自分は緑で表示
     });
     this.youText.x = 10;
-    this.youText.y = 115;
+    this.youText.y = 43 + (fontSize * 2 + 1) * 3;
     this.container.addChild(this.youText);
 
     // 右上に配置
-    this.container.x = app.renderer.width - 290;
+    this.container.x = app.renderer.width - fontSize * 21 - 10;
     this.container.y = 10;
 
     // 画面リサイズ対応
     window.addEventListener("resize", () => {
-      this.container.x = this.app.renderer.width - 290;
+      this.container.x = this.app.renderer.width - fontSize * 21 - 10;
     });
 
     app.stage.addChild(this.container);

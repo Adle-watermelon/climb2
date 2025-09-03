@@ -102,6 +102,7 @@ let mobs = new Map();
 let snapshots = new Map();
 let player;
 let ranking = [];
+let joystick = null;
 // ==========================
 // ゲーム開始関数
 // ==========================
@@ -129,7 +130,7 @@ async function startGame(playerName) {
     forceCanvas: true,
   });
   container.appendChild(app.canvas);
-  const joystick = new JoyStickManager(app, app.view.width/2 - 200, app.view.height/2 + 200);
+  if(isMobile()){joystick = new JoyStickManager(app, app.view.width - 20 - size*1.8, app.view.height/2*1.5);}
 
   // ====== ここからは今までの処理をそのまま移植 ======
   cameraContainer = new PIXI.Container();
@@ -200,10 +201,7 @@ async function startGame(playerName) {
     });
         // マウスクリックイベントリスナーを追加
     app.canvas.addEventListener('click', (event) => {
-          if (joystick.keys.W) console.log("UP");
-  if (joystick.keys.S) console.log("DOWN");
-  if (joystick.keys.A) console.log("LEFT");
-  if (joystick.keys.D) console.log("RIGHT");
+        if(isMobile()){return;}
         const rect = app.view.getBoundingClientRect();
         const mouseX = event.clientX - rect.left;
         const mouseY = event.clientY - rect.top;
@@ -225,6 +223,38 @@ async function startGame(playerName) {
             timestamp: Date.now()
         });
     });
+    if(isMobile()){scroll = 1;}
+app.canvas.addEventListener('touchstart', (event) => {
+    if (!isMobile()) return;
+    setTimeout(() => {
+    if(!joystick.active){
+    console.log("📱 touchstart");
+
+    const rect = app.view.getBoundingClientRect();
+    // 直前に追加された指（最後の要素）
+    const touch = event.touches[event.touches.length - 1];
+    const mouseX = touch.clientX - rect.left;
+    const mouseY = touch.clientY - rect.top;
+
+    // カメラの位置を考慮してワールド座標に変換
+    const worldX = mouseX - cameraContainer.x;
+    const worldY = mouseY - cameraContainer.y;
+
+    // グリッド座標に変換
+    const GRID_SIZE = size;
+    const blockX = Math.floor(worldX / GRID_SIZE);
+    const blockY = Math.floor(worldY / GRID_SIZE);
+
+    socket.emit('setBlock', {
+        x: blockX,
+        y: blockY,
+        type: 'stone',
+        timestamp: Date.now()
+    });
+    }
+    },10)
+    event.preventDefault();
+}, { passive: false });
     socket.on('setBlock' , (data) => {
         const block = data.block;
         chunkmanager.setBlock(data.bx,data.by,block._type,block._timer,block.timestamp)
@@ -262,8 +292,9 @@ async function startGame(playerName) {
             inventory.stonegraphics.width = size*1.5;
             inventory.stonegraphics.height = size*1.5;  
         }
+        if(isMobile()){inputManager.currentState = joystick.keys}
         inputManager.update();
-        updatePlayerMovement(player, inputManager.currentState, app.ticker.deltaMS/1000,chunkmanager)
+        if(isMobile()){updatePlayerMovement(player, joystick.keys, app.ticker.deltaMS/1000,chunkmanager)}else{updatePlayerMovement(player, inputManager.currentState, app.ticker.deltaMS/1000,chunkmanager)}
         player.drawChara(cameraContainer);
         bg.update(player.x,player.y + scroll);
         updateCamera(app,cameraContainer, player);
@@ -298,7 +329,7 @@ async function startGame(playerName) {
             }}
             mobs.get(mob.id).drawChara(cameraContainer);
         }
-        updateMouseHighlight()
+        if(!isMobile()){updateMouseHighlight()}
     });
         // マウスハイライト機能
     function updateMouseHighlight() {
@@ -319,7 +350,9 @@ async function startGame(playerName) {
     }
   
 }
-
+function isMobile() {
+  return /Android|iPhone|iPad|iPod|Windows Phone/i.test(navigator.userAgent);
+}
 // ==========================
 // タイトル画面のイベント設定
 // ==========================

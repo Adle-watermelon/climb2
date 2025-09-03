@@ -1,6 +1,6 @@
 import { CharaCore } from './CharaCore.js'
 import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
-import {size, charaheight, charawidth} from './Constants.js'
+import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Chara extends CharaCore {
     static cameraContainer = null;
     static textures = new Map(); // テクスチャキャッシュ
@@ -56,7 +56,7 @@ export class Chara extends CharaCore {
             // 名前テキスト追加
             this.nameText = new PIXI.Text(this.name, {
                 fontFamily: '"Press Start 2P", monospace',
-                fontSize: 14,
+                fontSize: fontSize -1,
                 fill: 0xffffff,
                 align: "center"
             });

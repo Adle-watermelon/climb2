@@ -1,6 +1,6 @@
 // module/RankingTape.js
 import * as PIXI from "https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs";
-import { size } from "./Constants.js"; // ← パスは環境に合わせて
+import { size, fontSize } from "./Constants.js"; // ← パスは環境に合わせて
 
 export class RankingTape {
   constructor(app,cameraContainer) {
@@ -15,7 +15,7 @@ export class RankingTape {
 
       const label = new PIXI.Text("", {
         fontFamily: "Press Start 2P",
-        fontSize: 12,
+        fontSize: fontSize,
         fill: 0xff0000,
         align: "right",
       });
