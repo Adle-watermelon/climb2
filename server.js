@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
         //ランキングチェック
         ranking = insertCharaIntoRanking(ranking,chara)
         
-      if(Math.abs(data.chara.x - chara.x) <= 0.35 && Math.abs(data.chara.y - chara.y) <= 0.35){
+      if(Math.abs(data.chara.x - chara.x) <= 0.75 && Math.abs(data.chara.y - chara.y) <= 0.75){
         let haveblock = chara.haveblock
         chara.acopy(data.chara)
         chara.haveblock = haveblock
