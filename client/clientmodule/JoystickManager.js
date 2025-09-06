@@ -69,8 +69,8 @@ this.joystickContainer.on("pointerupoutside", this.onUp.bind(this));
     const dy = pos.y - this.basePos.y;
 
     this.keys = { KeyW: false, KeyA: false, KeyS: false, KeyD: false };
-    if (dy < -this.knobRadius*1.3) this.keys.KeyW = true;
-    if (dy > this.knobRadius*1.3) this.keys.KeyS = true;
+    if (dy < -this.knobRadius*1.0) this.keys.KeyW = true;
+    if (dy > this.knobRadius*1.0) this.keys.KeyS = true;
     if (dx < -this.knobRadius*1.3) this.keys.KeyA = true;
     if (dx > this.knobRadius*1.3) this.keys.KeyD = true;
   }

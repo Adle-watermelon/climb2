@@ -215,7 +215,7 @@ async function startGame(playerName) {
         const blockY = Math.floor(worldY / GRID_SIZE);
         
         // setBlockイベントを送信
-        chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())
+        if(player.haveblock!=0){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
         socket.emit('setBlock', {
             x: blockX,
             y: blockY,
@@ -241,7 +241,7 @@ app.stage.on("pointerdown", (e) => {
     const blockX = Math.floor(worldX / GRID_SIZE);
     const blockY = Math.floor(worldY / GRID_SIZE);
     if(joystick.activetouch != e.pointerId){
-        chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())
+        if(player.haveblock!=0){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
         socket.emit("setBlock", {
         x: blockX,
         y: blockY,

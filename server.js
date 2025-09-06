@@ -63,7 +63,7 @@ setInterval(() => {
       socket.emit('haveblock', {haveblock:chara.haveblock})
     }
   }
-},5000);
+},7000);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -151,7 +151,7 @@ io.on('connection', (socket) => {
     }
     if(cansetBlock){
       if(player.haveblock > 0 && chunkManager.getBlock(bx,by) == "air"){
-        chunkManager.setBlock(bx,by,"stone",2.4)
+        chunkManager.setBlock(bx,by,"stone",3.5)
         const block = chunkManager.allgetBlock(bx,by)
         io.emit('setBlock', {bx:bx,by:by,block:block});
         player.haveblock -= 1;
