@@ -31,6 +31,7 @@ export class Chunk {
   }
   setBlock(bx, by, type, timer = 0, timestamp) {
     if (bx >= 0 && bx < 16 && by >= 0 && by < 16) {
+      if(this.blocks[by][bx]){if(this.blocks[by][bx].sprite){this.blocks[by][bx].destroy()}}
       const newblock = new Block(type,timer)
       newblock.timestamp = timestamp;
       newblock.setPosition(this.x*16 + bx,this.y*16 + by)

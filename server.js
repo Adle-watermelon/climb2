@@ -156,6 +156,9 @@ io.on('connection', (socket) => {
         io.emit('setBlock', {bx:bx,by:by,block:block});
         player.haveblock -= 1;
         socket.emit('haveblock', {haveblock:player.haveblock})
+      }else{
+        const block = chunkManager.allgetBlock(bx,by)
+        io.emit('setBlock', {bx:bx,by:by,block:block});
       }
     }
 

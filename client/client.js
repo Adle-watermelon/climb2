@@ -215,6 +215,7 @@ async function startGame(playerName) {
         const blockY = Math.floor(worldY / GRID_SIZE);
         
         // setBlockイベントを送信
+        chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())
         socket.emit('setBlock', {
             x: blockX,
             y: blockY,
@@ -226,8 +227,6 @@ async function startGame(playerName) {
 app.stage.interactive = true;
 app.stage.on("pointerdown", (e) => {
   if (!isMobile()) return;
-
-  setTimeout(() => {
     console.log("📱 pointerdown");
 
     // Pixi座標（stage基準）
@@ -242,6 +241,7 @@ app.stage.on("pointerdown", (e) => {
     const blockX = Math.floor(worldX / GRID_SIZE);
     const blockY = Math.floor(worldY / GRID_SIZE);
     if(joystick.activetouch != e.pointerId){
+        chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())
         socket.emit("setBlock", {
         x: blockX,
         y: blockY,
@@ -250,7 +250,6 @@ app.stage.on("pointerdown", (e) => {
         });
         console.log(`${blockX},${blockY}`)
     }
-  }, 10);
 
   // ブラウザのデフォルト挙動（スクロールなど）を抑制したい場合
   e.stopPropagation();
