@@ -11,7 +11,7 @@ export default class JoyStickManager {
     this.knobPos = { x: baseX, y: baseY };
 
     this.keys = { KeyW: false, KeyA: false, KeyS: false, KeyD: false };
-
+    this.activetouch = 0;
     // グラフィック作成
     this.joystickContainer = new PIXI.Container();
 app.stage.addChild(this.joystickContainer);
@@ -43,6 +43,7 @@ this.joystickContainer.on("pointerupoutside", this.onUp.bind(this));
   onDown(e) {
     const pos = e.data.global;
     this.active = true;
+    this.activetouch = e.pointerId;
     this.updateKnob(pos);
   }
 
@@ -68,9 +69,9 @@ this.joystickContainer.on("pointerupoutside", this.onUp.bind(this));
     const dy = pos.y - this.basePos.y;
 
     this.keys = { KeyW: false, KeyA: false, KeyS: false, KeyD: false };
-    if (dy < -this.knobRadius/2) this.keys.KeyW = true;
-    if (dy > this.knobRadius/2) this.keys.KeyS = true;
-    if (dx < -this.knobRadius/2) this.keys.KeyA = true;
-    if (dx > this.knobRadius/2) this.keys.KeyD = true;
+    if (dy < -this.knobRadius*1.3) this.keys.KeyW = true;
+    if (dy > this.knobRadius*1.3) this.keys.KeyS = true;
+    if (dx < -this.knobRadius*1.3) this.keys.KeyA = true;
+    if (dx > this.knobRadius*1.3) this.keys.KeyD = true;
   }
 }

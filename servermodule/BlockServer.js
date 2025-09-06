@@ -1,13 +1,13 @@
 import { charaheight, charawidth, synfps} from './Constants.js'
-
 export class Block {
-  constructor(type = "air",timer = 0) {
+  constructor(type = "air",timer = 0, items) {
     this._type = type;
     this.hp = timer;
     this._timer = timer;
     // 初期タイプを設定
     this.type = type;
     this.timestamp = Date.now();
+    this.items = items;
   }
   
   get type() {
@@ -26,12 +26,5 @@ export class Block {
     this._type = newType;
   }
   update() {
-    const now = Date.now();
-    if (this.type === "stone" ) {
-      this.hp = (this.timer - (now - this.timestamp)/1000);
-      if(this.hp <= 0) {
-        this.type = "air";
-      }
-    }
   }
 }

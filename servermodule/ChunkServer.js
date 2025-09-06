@@ -1,5 +1,10 @@
 import { Block } from './BlockServer.js'
+import { Item } from './ItemServer.js'
 export class Chunk {
+  static items
+  static initialization(items){
+    Chunk.items = items;
+  }
   constructor(x, y) {
     this.x = x; // チャンク座標 (ワールド座標とは別)
     this.y = y;
@@ -27,8 +32,21 @@ export class Chunk {
     }
   }
   update() {
-    for (let row of this.blocks) {
-      for (let b of row) b.update();
+    for(var i = 0;i<16;i++){
+      for(var j = 0;j<16;j++){
+        const now = Date.now();
+        if (this.blocks[i][j].type === "stone" ) {
+          this.blocks[i][j].hp = (this.blocks[i][j].timer - (now - this.blocks[i][j].timestamp)/1000);
+          if(this.blocks[i][j].hp <= 0) {
+            this.blocks[i][j].type = "air";
+            let time = Date.now()
+            let x = this.x * 16 + j + 0.5;
+            let y = this.y * 16 + i;
+            let item = new Item(`${time},${x},${y}`,x,y,"stone",time);
+            Chunk.items.set(`${time},${x},${y}`,item)
+          }
+        }
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ import { Inventory } from './clientmodule/Inventory.js';
 import { Ranking } from './clientmodule/Ranking.js';
 import { RankingTape } from './clientmodule/RankingTape.js';
 import { Background } from "./clientmodule/Background.js";
+import {Item} from './clientmodule/ItemClient.js'
 import JoyStickManager from "./clientmodule/JoystickManager.js";
 
 const socket = io();
@@ -50,8 +51,6 @@ window.addEventListener("wheel", (event) => {
 
   // 必要なら範囲制限
   // scroll = Math.max(0, scroll);
-
-  console.log("scroll:", scroll);
 });
 socket.on('connect', () => {
     console.log('✅ Connected to server');
@@ -103,10 +102,10 @@ let snapshots = new Map();
 let player;
 let ranking = [];
 let joystick = null;
+let items = new Map();
 // ==========================
 // ゲーム開始関数
 // ==========================
-
 async function startGame(playerName) {
   if (!isConnected) {
     alert('サーバーに接続されていません。しばらく待ってから再試行してください。');
@@ -135,7 +134,7 @@ async function startGame(playerName) {
   // ====== ここからは今までの処理をそのまま移植 ======
   cameraContainer = new PIXI.Container();
   app.stage.addChild(cameraContainer);
-
+  await Item.initialization(cameraContainer);
   await Block.initialization(cameraContainer);
   await Chara.initialization(cameraContainer);
   await Chara.loadTextures();
@@ -224,38 +223,39 @@ async function startGame(playerName) {
         });
     });
     if(isMobile()){scroll = 1;}
-app.canvas.addEventListener('touchstart', (event) => {
-    if (!isMobile()) return;
-    const previousactive = joystick.active
-    setTimeout(() => {
-    if(!joystick.active || ((previousactive) && joystick.active)){
-    console.log("📱 touchstart");
+app.stage.interactive = true;
+app.stage.on("pointerdown", (e) => {
+  if (!isMobile()) return;
 
-    const rect = app.view.getBoundingClientRect();
-    // 直前に追加された指（最後の要素）
-    const touch = event.touches[event.touches.length - 1];
-    const mouseX = touch.clientX - rect.left;
-    const mouseY = touch.clientY - rect.top;
+  setTimeout(() => {
+    console.log("📱 pointerdown");
 
-    // カメラの位置を考慮してワールド座標に変換
-    const worldX = mouseX - cameraContainer.x;
-    const worldY = mouseY - cameraContainer.y;
+    // Pixi座標（stage基準）
+    const pos = e.data.global;
 
-    // グリッド座標に変換
+    // カメラ位置を補正
+    const worldX = pos.x - cameraContainer.x;
+    const worldY = pos.y - cameraContainer.y;
+
+    // グリッド変換
     const GRID_SIZE = size;
     const blockX = Math.floor(worldX / GRID_SIZE);
     const blockY = Math.floor(worldY / GRID_SIZE);
-
-    socket.emit('setBlock', {
+    if(joystick.activetouch != e.pointerId){
+        socket.emit("setBlock", {
         x: blockX,
         y: blockY,
-        type: 'stone',
-        timestamp: Date.now()
-    });
+        type: "stone",
+        timestamp: Date.now(),
+        });
+        console.log(`${blockX},${blockY}`)
     }
-    },10)
-    event.preventDefault();
-}, { passive: false });
+  }, 10);
+
+  // ブラウザのデフォルト挙動（スクロールなど）を抑制したい場合
+  e.stopPropagation();
+});
+
     socket.on('setBlock' , (data) => {
         const block = data.block;
         chunkmanager.setBlock(data.bx,data.by,block._type,block._timer,block.timestamp)
@@ -263,12 +263,43 @@ app.canvas.addEventListener('touchstart', (event) => {
     socket.on('haveblock' ,(data) => {
         player.haveblock = data.haveblock;
     })
+    socket.on('itemAdd' , (item) => {
+        let newitem = new Item(0,0,0,"stone",Date.now())
+        newitem.acopy(item)
+        console.log(newitem)
+        items.set(item.id,newitem)
+
+    })
+    socket.on('itemDestroy', (data) => {
+        let id = data.id
+        if(items.has(id)){if(!items.get(id).followingplayer){items.get(id).destroy();items.delete(id);}}
+    })
+    socket.on('itemGotten', (data) => {
+        let id = data.id;
+        let playerid = data.playerid
+        if(items.has(id)){
+            items.get(id).followingplayer = playerid;
+        }
+    })
     setInterval(() => {
         socket.emit('checkPlayerPos',{timestamp:Date.now(),chara:player.convertCore()})
         //ついでにブロック更新
         chunkmanager.update();
     }, 1000/synfps);
     app.ticker.add(() => {
+        let now = Date.now()
+        for(const [id,item] of items){
+            item.drawItem(player);
+            let Charas = deepCopyMap(mobs)
+            Charas.set(player.id,player)
+            item.update(now,Charas);
+            if(item.followingplayer){
+                if(item.followtime >= Item.time){
+                    item.destroy();
+                    items.delete(id)
+                }
+            }
+        }
         rankingTape.update(ranking, { x: player.x * size, y: player.y * size });
         if(inventory.items.stone != player.haveblock){
             
@@ -363,3 +394,50 @@ document.addEventListener("DOMContentLoaded", () => {
     startGame(playerName);
   });
 });
+function deepCopyMap(map) {
+  if (!(map instanceof Map)) {
+    throw new TypeError("Argument must be a Map");
+  }
+
+  const copy = new Map();
+  for (const [key, value] of map) {
+    copy.set(deepCopyValue(key), deepCopyValue(value));
+  }
+  return copy;
+}
+function deepCopyValue(value, seen = new WeakMap()) {
+  if (value instanceof Map) {
+    if (seen.has(value)) return seen.get(value);
+    const copy = new Map();
+    seen.set(value, copy);
+    for (const [k, v] of value) {
+      copy.set(deepCopyValue(k, seen), deepCopyValue(v, seen));
+    }
+    return copy;
+  } else if (value instanceof Set) {
+    if (seen.has(value)) return seen.get(value);
+    const copy = new Set();
+    seen.set(value, copy);
+    for (const v of value) {
+      copy.add(deepCopyValue(v, seen));
+    }
+    return copy;
+  } else if (Array.isArray(value)) {
+    if (seen.has(value)) return seen.get(value);
+    const copy = [];
+    seen.set(value, copy);
+    for (const v of value) {
+      copy.push(deepCopyValue(v, seen));
+    }
+    return copy;
+  } else if (value && typeof value === "object") {
+    if (seen.has(value)) return seen.get(value);
+    const copy = {};
+    seen.set(value, copy);
+    for (const [k, v] of Object.entries(value)) {
+      copy[k] = deepCopyValue(v, seen);
+    }
+    return copy;
+  }
+  return value; // プリミティブ型
+}

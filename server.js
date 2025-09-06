@@ -8,6 +8,8 @@ import { Chara } from './servermodule/CharaServer.js'
 import { synfps, scale, charaheight, charawidth } from './servermodule/Constants.js'
 import { ChunkManager } from './servermodule/Chunk_ManagerServer.js';
 import { updatePlayerMovement } from './servermodule/Physics.js';
+import { Item } from './servermodule/ItemServer.js'
+import { Chunk } from './servermodule/ChunkServer.js';
 const app = express();
 const fps = 60;
 const __filename = fileURLToPath(import.meta.url);
@@ -23,8 +25,9 @@ const io = new Server(httpServer, {
     origin: "*"
   }
 });
-
-const playerInputStates = new Map();
+let items = new Map();
+Item.initialize(io);
+Chunk.initialization(items);
 let charas = new Map();
 let ranking = [];
 let chunkManager = new ChunkManager();
@@ -49,16 +52,18 @@ setInterval(() => {
   }
   //ついでにブロックの更新
   chunkManager.update()
+  //ついでにアイテム同期
 }, scale*1000/synfps);
+//ブロック数アップデート
 setInterval(() => {
   for(const [id,chara] of charas){
-    chara.haveblock += 1;
+    if(chara.haveblock < 15){chara.haveblock += 2;}
     const socket = io.sockets.sockets.get(id);
     if(socket){
       socket.emit('haveblock', {haveblock:chara.haveblock})
     }
   }
-},4000);
+},5000);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -106,6 +111,7 @@ io.on('connection', (socket) => {
           if(nextsnapshot){if(nextsnapshot.timestamp <= thentime){thenkeystateindex++;thenkeystate = kss[thenkeystateindex];}}
           updatePlayerMovement(chara,thenkeystate.keystate,delta,chunkManager)
           if(miny > chara.y){miny = chara.y}
+          for(const [id,item] of items){item.updatePos(thentime);item.check(chara);}
         }
         //ランキングチェック
         ranking = insertCharaIntoRanking(ranking,chara)
@@ -145,7 +151,7 @@ io.on('connection', (socket) => {
     }
     if(cansetBlock){
       if(player.haveblock > 0 && chunkManager.getBlock(bx,by) == "air"){
-        chunkManager.setBlock(bx,by,"stone",3.7)
+        chunkManager.setBlock(bx,by,"stone",2.4)
         const block = chunkManager.allgetBlock(bx,by)
         io.emit('setBlock', {bx:bx,by:by,block:block});
         player.haveblock -= 1;
