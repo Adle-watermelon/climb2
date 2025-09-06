@@ -55,6 +55,7 @@ export class Item extends ItemCore{
     update(time,charas){
         if(this.followingplayer){
             const targetplayer = charas.get(this.followingplayer)
+            if(targetplayer){
             const targetX = targetplayer.x;
             const targetY = targetplayer.y;
             const i = this.followtime / Item.time;
@@ -67,6 +68,7 @@ export class Item extends ItemCore{
             }
             this.followtime += (time - this.lastupdate) / 1000
             if(this.followtime > Item.time){this.followtime = Item.time;}
+            }else{this.followtime = Item.time}
         } else {
             this.updatePos(time);
         }
