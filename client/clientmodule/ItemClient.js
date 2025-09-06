@@ -38,8 +38,10 @@ export class Item extends ItemCore{
         }
 
         // 毎回: 座標を更新
+        if(this.sprite){
         this.sprite.x = this.x * size;
         this.sprite.y = this.y * size;
+        }
     }
     set followingplayer(flag){
         this.iix = this.x;
@@ -58,9 +60,11 @@ export class Item extends ItemCore{
             const i = this.followtime / Item.time;
             this.x = (targetX - this.iix) * i + this.iix;
             this.y = (targetY - this.iiy) * i + this.iiy;
+            if(this.sprite){
             this.sprite.width = size * (0.5 - i*0.25)
             this.sprite.height = size * (0.5 - i*0.25)
             this.sprite.anchor.set(0.5,0.5);
+            }
             this.followtime += (time - this.lastupdate) / 1000
             if(this.followtime > Item.time){this.followtime = Item.time;}
         } else {
