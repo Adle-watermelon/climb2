@@ -67,6 +67,10 @@ setInterval(() => {
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
+  socket.on("syncTime", (clientSendTime, ack) => {
+    const serverTime = Date.now();
+    ack(serverTime);
+  });
   socket.on('gamestart', () => {
   let chara = new Chara(socket.id, 7, 0)
   charas.set(socket.id,chara)
