@@ -4,10 +4,10 @@ import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Item extends ItemCore{
     static time = 0.1;
     static cameraContainer = null;
-    static textures = new Map();
-    static async initialization(cameraContainer){
+    static textures = null;
+    static async initialization(cameraContainer,textures){
         Item.cameraContainer = cameraContainer;
-        Item.textures.set('stone', await PIXI.Assets.load('./assets/stone.png'));
+        Item.textures = await textures;
     }
     constructor(id,x,y,type,timestamp = Date.now(),followingplayer = null,speed = 7){
         super(id,x,y,type,timestamp,followingplayer,speed);

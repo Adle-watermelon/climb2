@@ -2,22 +2,14 @@ import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
 import {size} from './Constants.js'
 export class Inventory {
     static uiContainer = null;
-    static textures = new Map();
+    static textures = null;
     static instances = new Map(); // 複数のインベントリインスタンス管理用
     
-    static async initialization(parentContainer) {
+    static async initialization(parentContainer,textures) {
         // UI用の固定コンテナを作成（カメラの影響を受けない）
         Inventory.uiContainer = new PIXI.Container();
         parentContainer.addChild(Inventory.uiContainer);
-        // テクスチャを事前読み込み
-        await Inventory.loadTextures();
-    }
-    
-    static async loadTextures() {
-        Inventory.textures.set('stone', await PIXI.Assets.load('./assets/stone.png'));
-        Inventory.textures.get('stone').baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
-        Inventory.textures.set('frame', await PIXI.Assets.load('./assets/frame.png'));
-        Inventory.textures.get('frame').baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+        Inventory.textures = await textures;
     }
     
     constructor(ownerId, x = 20, y = null) {

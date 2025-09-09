@@ -3,22 +3,11 @@ import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
 import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Chara extends CharaCore {
     static cameraContainer = null;
-    static textures = new Map(); // テクスチャキャッシュ
+    static textures = null; // テクスチャキャッシュ
     
-    static async initialization(cameraContainer){
+    static async initialization(cameraContainer,textures){
         Chara.cameraContainer = cameraContainer;
-        // テクスチャを事前読み込み
-        Chara.textures.set('walk1', await PIXI.Assets.load('./assets/walk1.png'));
-        Chara.textures.set('walk2', await PIXI.Assets.load('./assets/walk2.png'));
-        Chara.textures.set('walk3', await PIXI.Assets.load('./assets/walk3.png'));
-        Chara.textures.set('idle', await PIXI.Assets.load('./assets/idle.png'));
-        Chara.textures.set('jump', await PIXI.Assets.load('./assets/jump.png'));
-        Chara.textures.set('slip', await PIXI.Assets.load('./assets/slip.png'));
-    }
-    
-    static async loadTextures() {
-        const textureNames = ['walk1', 'walk2', 'walk3', 'idle', 'jump', 'slip'];
-
+        Chara.textures = await textures;
     }
     
     constructor(id, x, y, direction = "right", status = "idle"){

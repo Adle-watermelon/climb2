@@ -1,11 +1,11 @@
 import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
 import {size, charaheight, charawidth, synfps} from './Constants.js'
 export class Block {
-  static textures = new Map();
+  static textures = null;
   static cameraContainer = null;
-  static async initialization(cameraContainer){
+  static async initialization(cameraContainer,textures){
     Block.cameraContainer = cameraContainer;
-    Block.textures.set('stone', await PIXI.Assets.load('./assets/stone.png'));
+    Block.textures = await textures;
   }
   constructor(type = "air",timer = 0) {
     this.sprite = null;

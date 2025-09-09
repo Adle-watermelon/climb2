@@ -41,7 +41,7 @@ export class Chunk {
             this.blocks[i][j].type = "air";
             let time = Date.now()
             let x = this.x * 16 + j + 0.5;
-            let y = this.y * 16 + i;
+            let y = this.y * 16 + i + 0.5;
             let item = new Item(`${time},${x},${y}`,x,y,"stone",time);
             Chunk.items.set(`${time},${x},${y}`,item)
           }

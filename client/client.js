@@ -5,7 +5,7 @@ import { io } from 'https://cdn.socket.io/4.7.5/socket.io.esm.min.js';
 import { WASDInputManager } from './clientmodule/KeyManager.js';
 import { Block } from './clientmodule/BlockClient.js';
 import { Chunk } from './clientmodule/ChunkClient.js';
-import { size, synfps, scale } from './clientmodule/Constants.js';
+import { size, synfps, scale, charawidth, charaheight } from './clientmodule/Constants.js';
 import { updatePlayerMovement } from './clientmodule/Physics.js';
 import { ChunkManager } from './clientmodule/Chunk_ManagerClient.js';
 import { Inventory } from './clientmodule/Inventory.js';
@@ -14,10 +14,12 @@ import { RankingTape } from './clientmodule/RankingTape.js';
 import { Background } from "./clientmodule/Background.js";
 import {Item} from './clientmodule/ItemClient.js'
 import JoyStickManager from "./clientmodule/JoystickManager.js";
-
+import { Texture } from "./clientmodule/Texture.js"
 const socket = io();
+Texture.initialization();
+////////////////////////////////////////////////////////////////////////////////////////////////////////
 let isConnected = false;
-let connectionStatus = 'connecting';
+let connectionStatus = "disconnected"
 function showConnectionStatus(status, message) {
   const statusDiv = document.getElementById('connection-status') || createStatusDiv();
   statusDiv.textContent = message;
@@ -43,15 +45,6 @@ function createStatusDiv() {
   document.body.appendChild(div);
   return div;
 }
-let scroll = 0;
-
-window.addEventListener("wheel", (event) => {
-  // 上スクロールでプラス、下スクロールでマイナス
-  scroll += event.deltaY > 0 ? 1 : -1;
-
-  // 必要なら範囲制限
-  // scroll = Math.max(0, scroll);
-});
 socket.on('connect', () => {
     console.log('✅ Connected to server');
     isConnected = true;
@@ -93,6 +86,12 @@ socket.on('reconnect_failed', () => {
     showConnectionStatus('error', '🔴Connection Failed');
     alert('Could not connect to server.\nPlease reload the page.');
 });
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+let scroll = 0;
+
+window.addEventListener("wheel", (event) => {
+  scroll += event.deltaY > 0 ? 1 : -1;
+});
 // Pixiをまだ作らない
 let inputManager;
 let app
@@ -103,10 +102,12 @@ let player;
 let ranking = [];
 let joystick = null;
 let items = new Map();
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ==========================
 // ゲーム開始関数
 // ==========================
 async function startGame(playerName) {
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
   if (!isConnected) {
     alert('サーバーに接続されていません。しばらく待ってから再試行してください。');
     return;
@@ -114,11 +115,11 @@ async function startGame(playerName) {
   socket.emit('gamestart')
   // タイトル画面を消す
   document.getElementById('title-screen').style.display = 'none';
-  unshowConnectionStatus();
+
     // ゲーム画面を表示
   const container = document.getElementById('game-container');
   container.style.display = 'block';
-
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   // Pixiアプリ作成
   app = new PIXI.Application();
   await app.init({
@@ -134,11 +135,10 @@ async function startGame(playerName) {
   // ====== ここからは今までの処理をそのまま移植 ======
   cameraContainer = new PIXI.Container();
   app.stage.addChild(cameraContainer);
-  await Item.initialization(cameraContainer);
-  await Block.initialization(cameraContainer);
-  await Chara.initialization(cameraContainer);
-  await Chara.loadTextures();
-  await Inventory.initialization(app.stage);
+  await Item.initialization(cameraContainer,Texture.textures);
+  await Block.initialization(cameraContainer,Texture.textures);
+  await Chara.initialization(cameraContainer,Texture.textures);
+  await Inventory.initialization(app.stage,Texture.textures);
       const rankingTape = new RankingTape(app, cameraContainer);
     const rankingUI = new Ranking(app);
 
@@ -220,8 +220,10 @@ async function startGame(playerName) {
         const by = blockY;
         const x = player.x;
         const y = player.y;
+        const flag = (a(x + charawidth/2,y-0.01,bx,by) || a(x - charawidth/2,y-0.01,bx,by) || a(x + charawidth/2,y-charaheight/2,bx,by) || a(x - charawidth/2,y-charaheight/2,bx,by) || a(x + charawidth/2,y-charaheight + 0.01,bx,by) || a(x - charawidth/2,y-charaheight + 0.01,bx,by))
         // setBlockイベントを送信
-        if(player.haveblock!=0 || (a(x + charawidth/2,y-0.01,bx,by) || a(x - charawidth/2,y-0.01,bx,by) || a(x + charawidth/2,y-charaheight/2,bx,by) || a(x - charawidth/2,y-charaheight/2,bx,by) || a(x + charawidth/2,y-charaheight + 0.01,bx,by) || a(x - charawidth/2,y-charaheight + 0.01,bx,by))){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
+        console.log(flag)
+        if(player.haveblock!=0 && !flag){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
         socket.emit('setBlock', {
             x: blockX,
             y: blockY,
