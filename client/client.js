@@ -198,6 +198,9 @@ async function startGame(playerName) {
         // カメラの位置を考慮してワールド座標に変換
 
     });
+      function a(x,y,ax,ay){
+    return Math.floor(x) == Math.floor(ax) && Math.floor(y) == Math.floor(ay)
+  }
         // マウスクリックイベントリスナーを追加
     app.canvas.addEventListener('click', (event) => {
         if(isMobile()){return;}
@@ -213,9 +216,12 @@ async function startGame(playerName) {
         const GRID_SIZE = size; // ブロックのサイズ
         const blockX = Math.floor(worldX / GRID_SIZE);
         const blockY = Math.floor(worldY / GRID_SIZE);
-        
+        const bx = blockX;
+        const by = blockY;
+        const x = player.x;
+        const y = player.y;
         // setBlockイベントを送信
-        if(player.haveblock!=0){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
+        if(player.haveblock!=0 || (a(x + charawidth/2,y-0.01,bx,by) || a(x - charawidth/2,y-0.01,bx,by) || a(x + charawidth/2,y-charaheight/2,bx,by) || a(x - charawidth/2,y-charaheight/2,bx,by) || a(x + charawidth/2,y-charaheight + 0.01,bx,by) || a(x - charawidth/2,y-charaheight + 0.01,bx,by))){chunkmanager.setBlock(blockX,blockY,"stone",0.3,Date.now())}
         socket.emit('setBlock', {
             x: blockX,
             y: blockY,
@@ -223,6 +229,7 @@ async function startGame(playerName) {
             timestamp: Date.now()
         });
     });
+
     if(isMobile()){scroll = 1;}
 app.stage.interactive = true;
 app.stage.on("pointerdown", (e) => {
