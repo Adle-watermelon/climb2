@@ -1,5 +1,5 @@
 import { CharaCore } from '../coremodule/CharaCore.js'
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
+import * as PIXI from 'pixi.js'
 import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Chara extends CharaCore {
     static cameraContainer = null;

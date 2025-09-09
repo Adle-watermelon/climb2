@@ -1,4 +1,4 @@
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
+import * as PIXI from 'pixi.js'
 import {size, charaheight, charawidth, synfps} from './Constants.js'
 export class Block {
   static textures = null;

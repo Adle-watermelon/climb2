@@ -2,19 +2,17 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=0.4, maximum-scale=0.4, user-scalable=no">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>■Climb</title>
   <!-- ドット絵風フォント -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-  <style>
-    input, textarea {
-  font-size: 16px !important;
-}
+<style>
+input, textarea { font-size: 16px !important; }
 * {
   -webkit-touch-callout: none; /* 長押しメニュー禁止 */
   -webkit-user-select: none;   /* テキスト選択禁止 */
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 html, body {
   overflow: hidden;  /* スクロール禁止 */
@@ -22,93 +20,113 @@ html, body {
   height: 100%;
   margin: 0;
 }
-* {
-  -webkit-tap-highlight-color: transparent;
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+  font-family: 'Press Start 2P', cursive;
 }
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
-      font-family: 'Press Start 2P', cursive;
-    }
-    #title-screen {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
-    }
-    #title-screen h1 {
-      font-size: 48px;
-      color: #fff;
-      text-shadow: 4px 4px #000, -2px -2px #333;
-      margin-bottom: 50px;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; }
-      to   { text-shadow: 0 0 20px #ff66ff, 0 0 40px #ff66ff; }
-    }
-    #title-screen input {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 18px;
-      padding: 12px 16px;
-      margin-bottom: 30px;
-      border: 2px solid #00ffcc;
-      border-radius: 8px;
-      background: #111;
-      color: #fff;
-      outline: none;
-      text-align: center;
-      transition: 0.2s;
-      width: 300px;
-    }
-    #title-screen input:focus {
-      border-color: #ff66ff;
-      box-shadow: 0 0 10px #ff66ff;
-    }
-    #title-screen button {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 20px;
-      padding: 14px 32px;
-      border: none;
-      border-radius: 8px;
-      background: linear-gradient(to bottom, #00cc66, #008844);
-      color: white;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      transition: 0.2s;
-    }
-    #title-screen button:hover {
-      background: linear-gradient(to bottom, #00ff88, #00aa55);
-      transform: scale(1.05);
-      box-shadow: 0 0 15px #00ff88;
-    }
-    #game-container {
-      display: none; /* 最初は非表示 */
-    }
-  </style>
+
+/* タイトル画面 */
+#title-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 上と下に分散 */
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(to bottom, #0d0d0d, #1a1a1a);
+  padding: 20vh 0; /* 上下余白 */
+}
+
+/* タイトル部分 */
+#title-screen h1 {
+  font-size: 15vw;
+  color: #fff;
+  text-shadow: 4px 4px #000, -2px -2px #333;
+  margin: 0;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+/* 操作部ラッパー */
+#title-screen .controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 60vh; /* 下寄せ */
+}
+
+#title-screen input {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 18px;
+  padding: 12px 16px;
+  margin-bottom: 30px;
+  border: 2px solid #00ffcc;
+  border-radius: 8px;
+  background: #111;
+  color: #fff;
+  outline: none;
+  text-align: center;
+  transition: 0.2s;
+  width: 300px;
+}
+
+#title-screen input:focus {
+  border-color: #ff66ff;
+  box-shadow: 0 0 10px #ff66ff;
+}
+
+#title-screen button {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(to bottom, #00cc66, #008844);
+  color: white;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transition: 0.2s;
+}
+
+#title-screen button:hover {
+  background: linear-gradient(to bottom, #00ff88, #00aa55);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px #00ff88;
+}
+
+#game-container {
+  display: none; /* 最初は非表示 */
+}
+
+/* アニメーション */
+@keyframes glow {
+  from { text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc; }
+  to   { text-shadow: 0 0 20px #ff66ff, 0 0 40px #ff66ff; }
+}
+</style>
+
+  <script type="module" crossorigin src="./assets/index-BAugUPaB.js"></script>
 </head>
 <body>
   <!-- タイトル画面 -->
-  <div id="title-screen">
-    <h1>CLIMB!</h1>
+<div id="title-screen">
+  <h1>CLIMB!</h1>
+  <div class="controls">
     <input pattern="[A-Za-z0-9_]+" autocomplete="off" type="text" id="playerName" placeholder="YOUR NAME">
     <button id="startButton">START</button>
   </div>
+</div>
 
   <!-- ゲーム用 -->
   <div id="game-container"></div>
-
-  <script type="module" src="client.js"></script>
+
 <script>
   const nameInput = document.getElementById("playerName");
 

@@ -2,9 +2,10 @@ import { Chunk } from './ChunkClient.js'
 
 export class ChunkManager {
     static socket = null;
-    
-    static async initialization(socket){
+    static offset = 0;
+    static async initialization(socket,offset){
         ChunkManager.socket = socket;
+        ChunkManager.offset = offset;
     }
     
     constructor(){
@@ -160,7 +161,6 @@ export class ChunkManager {
             requestInfo.resolve(chunk);
             this.chunks.delete(pendingKey);
         }
-        
         // Promise管理からも削除
         this.requestPromises.delete(chunkKey);
     }
@@ -292,7 +292,7 @@ export class ChunkManager {
         
         console.log('チャンクキャッシュをクリアしました');
     }
-    setBlock(x,y,type,timer = 0, timestamp = Date.now()){
+    setBlock(x,y,type,timer = 0, timestamp = Date.now() + ChunkManager.offset){
         const cx = Math.floor(x/16)
         const cy = Math.floor(y/16)
         const chunk = this.getChunk(cx,cy)
@@ -302,7 +302,8 @@ export class ChunkManager {
     }
     update(){
         for(const [id,chunk] of this.chunks){
-            if(chunk.constructor.name == "Chunk"){chunk.update()};
+
+            if(chunk.blocks){chunk.update()};
         }
     }
 }

@@ -11,6 +11,7 @@ export class ItemCore {
         this.speed = speed;
         this._destroyflag = false;
         this.destroyflag = false;
+        this.lateflag = false;
     }
     convertCore() {
         const result = new ItemCore(0,0,0,"stone")
@@ -27,7 +28,8 @@ export class ItemCore {
         }
     }
     updatePos(time){
-        this.y = this.iy + this.speed*(time - this.timestamp)/1000;
+        let c = Math.sign(time - this.timestamp) == -1 ? 0 : time - this.timestamp
+        this.y = this.iy + this.speed*(c)/1000;
         if(this.y > 1){this.destroyflag = true;}
     }
 

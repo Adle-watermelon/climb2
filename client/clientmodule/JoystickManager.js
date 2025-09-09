@@ -1,5 +1,5 @@
 // JoyStickManager.js
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs';
+import * as PIXI from 'pixi.js'
 import { size } from './Constants.js'
 export default class JoyStickManager {
   constructor(app, baseX, baseY, baseRadius = size*1.8, knobRadius = size * 0.5) {

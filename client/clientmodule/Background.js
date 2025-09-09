@@ -1,5 +1,5 @@
 // module/Background.js
-import * as PIXI from "https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs";
+import * as PIXI from 'pixi.js'
 import { size } from "./Constants.js";
 
 export class Background {
@@ -17,7 +17,7 @@ export class Background {
 
   async _loadLayers() {
     for (const layer of this.layers) {
-      const texture = await PIXI.Assets.load(layer.texture);
+      const texture = layer.texture;
       texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
 
       const group = [];

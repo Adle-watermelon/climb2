@@ -1,4 +1,4 @@
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs';
+import * as PIXI from 'pixi.js'
 import bg_ground from '../assets/bg_ground.png'
 import bg_city from '../assets/bg_city.png' 
 import bg_clouds from '../assets/bg_clouds.png'
@@ -12,6 +12,7 @@ import idle from '../assets/idle.png'
 import jump from '../assets/jump.png'
 import slip from '../assets/slip.png'
 export class Texture{
+    static loaded = false;
     static textures = new Map()
     static async initialization(){
         Texture.textures.set('bg_ground', await PIXI.Assets.load(bg_ground));
@@ -26,5 +27,6 @@ export class Texture{
         Texture.textures.set('idle', await PIXI.Assets.load(idle));
         Texture.textures.set('jump', await PIXI.Assets.load(jump));
         Texture.textures.set('slip', await PIXI.Assets.load(slip));
+        Texture.loaded = true;
     }
 }

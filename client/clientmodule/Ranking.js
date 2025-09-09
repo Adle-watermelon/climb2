@@ -1,5 +1,5 @@
 // module/Ranking.js
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs';
+import * as PIXI from 'pixi.js'
 import { fontSize } from './Constants.js'
 export class Ranking {
   constructor(app) {
@@ -10,7 +10,7 @@ export class Ranking {
     this.background = new PIXI.Graphics();
     this.background.beginFill(0x000000, 0.6);
     this.background.lineStyle(2, 0xffffff, 1);
-    this.background.drawRoundedRect(0, 0, fontSize* 21, fontSize*12, 10);
+    this.background.drawRoundedRect(0, 0, fontSize* 21, fontSize*16, 10);
     this.background.endFill();
     this.container.addChild(this.background);
 

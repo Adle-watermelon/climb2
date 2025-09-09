@@ -1,5 +1,5 @@
 // module/RankingTape.js
-import * as PIXI from "https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs";
+import * as PIXI from 'pixi.js'
 import { size, fontSize } from "./Constants.js"; // ← パスは環境に合わせて
 
 export class RankingTape {

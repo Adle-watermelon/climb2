@@ -1,5 +1,5 @@
 import { ItemCore } from '../coremodule/ItemCore.js'
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
+import * as PIXI from 'pixi.js'
 import {size, charaheight, charawidth, fontSize} from './Constants.js'
 export class Item extends ItemCore{
     static time = 0.1;

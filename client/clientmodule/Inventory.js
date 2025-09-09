@@ -1,4 +1,4 @@
-import * as PIXI from 'https://unpkg.com/pixi.js@8.5.1/dist/pixi.mjs'
+import * as PIXI from 'pixi.js'
 import {size} from './Constants.js'
 export class Inventory {
     static uiContainer = null;
@@ -58,6 +58,7 @@ export class Inventory {
             stoneIcon.width = size*1.5;
             stoneIcon.height = size*1.5;
             this.stonegraphics = stoneIcon;
+            console.log("baabababa")
             this.uiElements.addChild(stoneIcon);
         }
         
