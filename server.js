@@ -37,7 +37,7 @@ setInterval(() => {
   for(const [id,chara] of charas){
     const socket = io.sockets.sockets.get(id);
     for(const [sid,schara] of charas){
-      if( socket && Math.hypot(schara.x - chara.x,schara.y - chara.y) <= 40 && id != sid){
+      if( socket && id != sid){
         socket.emit('playerUpdate', {
         chara:schara.convertCore(),
         timestamp: Date.now()
@@ -87,7 +87,8 @@ io.on('connection', (socket) => {
   // チャット受信
   socket.on('chatMessage', (msg) => {
     console.log(`チャット(${chara.name}): ${msg}`);
-    io.emit('chatMessage', { id: socket.id, msg:msg });
+    const outmsg = chara.name || "" + ": " + msg
+    io.emit('chatMessage', { id: socket.id, msg:outmsg });
   });
       // WASD入力を受信
   socket.on('playerInput', (data) => {
