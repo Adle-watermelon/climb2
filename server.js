@@ -59,7 +59,7 @@ setInterval(() => {
 setInterval(() => {
   for(const [id,chara] of charas){
     let itemtimer = itemtimers.get(id) || 0;
-      if(itemtimer < 4){
+      if(itemtimer < 2){
         if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);console.log(itemtimers.get(id))}
       } else {
         chara.haveblock += 3;
@@ -71,7 +71,7 @@ setInterval(() => {
         itemtimers.set(id, itemtimer);
       }
     }
-},1050);
+},1100);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -85,7 +85,6 @@ io.on('connection', (socket) => {
   charas.set(socket.id,chara)
       // WASD入力を受信
   socket.on('playerInput', (data) => {
-    console.log(`${socket.id} - ${data.type}: ${data.key}`);
     
     // プレイヤーの入力状態を更新
     const KeyState = charas.get(socket.id).keystate;
