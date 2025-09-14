@@ -58,10 +58,9 @@ setInterval(() => {
 //ブロック数アップデート
 setInterval(() => {
   for(const [id,chara] of charas){
-    const itemtimer = itemtimers.get(id) || null;
-    if(itemtimer !== null){
+    const itemtimer = itemtimers.get(id) || 0;
       if(itemtimer < 4){
-        if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);}
+        if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);console.log(itemtimers.get(id))}
       } else {
         chara.haveblock += 3;
         const socket = io.sockets.sockets.get(id);
@@ -72,7 +71,6 @@ setInterval(() => {
         itemtimers.set(id, itemtimer);
       }
     }
-  }
 },1200);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
