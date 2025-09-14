@@ -60,7 +60,7 @@ setInterval(() => {
   for(const [id,chara] of charas){
     let itemtimer = itemtimers.get(id) || 0;
       if(itemtimer < 2){
-        if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);console.log(itemtimers.get(id))}
+        if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);}
       } else {
         chara.haveblock += 3;
         const socket = io.sockets.sockets.get(id);
@@ -81,8 +81,14 @@ io.on('connection', (socket) => {
   });
   socket.on('gamestart', () => {
   let chara = new Chara(socket.id, 7, 0)
+  console.log('Player joined');
   itemtimers.set(socket.id,0)
   charas.set(socket.id,chara)
+  // チャット受信
+  socket.on('chatMessage', (msg) => {
+    console.log(`チャット(${chara.name}): ${msg}`);
+    io.emit('chatMessage', { id: socket.id, msg:msg });
+  });
       // WASD入力を受信
   socket.on('playerInput', (data) => {
     
