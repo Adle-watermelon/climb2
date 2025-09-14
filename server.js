@@ -71,7 +71,7 @@ setInterval(() => {
         itemtimers.set(id, itemtimer);
       }
     }
-},1100);
+},900);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
