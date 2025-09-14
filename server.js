@@ -63,7 +63,7 @@ setInterval(() => {
       socket.emit('haveblock', {haveblock:chara.haveblock})
     }
   }
-},3500);
+},4200);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -97,7 +97,7 @@ io.on('connection', (socket) => {
   function chakblock(bx,by){
                 const block = chunkManager.allgetBlock(bx,by)
             if(block.type == "stone" && block.timer >= 1000){
-              chunkManager.setBlock(bx,by,"stone",1.0)
+              chunkManager.setBlock(bx,by,"stone",0.7)
               const newblock = chunkManager.allgetBlock(bx,by)
               io.emit('setBlock', {bx:bx,by:by,block:newblock});
             }
