@@ -87,7 +87,7 @@ io.on('connection', (socket) => {
   // チャット受信
   socket.on('chatMessage', (msg) => {
     console.log(`チャット(${chara.name}): ${msg}`);
-    const outmsg = chara.name || "" + ": " + msg
+    const outmsg = (chara.name || "null") + ": " + msg
     io.emit('chatMessage', { id: socket.id, msg:outmsg });
   });
       // WASD入力を受信
