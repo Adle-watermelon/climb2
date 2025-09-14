@@ -58,7 +58,7 @@ setInterval(() => {
 //ブロック数アップデート
 setInterval(() => {
   for(const [id,chara] of charas){
-    const itemtimer = itemtimers.get(id) || 0;
+    let itemtimer = itemtimers.get(id) || 0;
       if(itemtimer < 4){
         if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);console.log(itemtimers.get(id))}
       } else {
