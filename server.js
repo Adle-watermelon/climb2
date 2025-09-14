@@ -26,6 +26,7 @@ const io = new Server(httpServer, {
   }
 });
 let items = new Map();
+let itemtimers = new Map();
 Item.initialize(io);
 Chunk.initialization(items);
 let charas = new Map();
@@ -57,13 +58,21 @@ setInterval(() => {
 //ブロック数アップデート
 setInterval(() => {
   for(const [id,chara] of charas){
-    if(chara.haveblock == 0){chara.haveblock += 3;}
-    const socket = io.sockets.sockets.get(id);
-    if(socket){
-      socket.emit('haveblock', {haveblock:chara.haveblock})
+    const itemtimer = itemtimers.get(id) || null;
+    if(itemtimer !== null){
+      if(itemtimer < 4){
+        if(chara.haveblock == 0){itemtimer++}
+      } else {
+        chara.haveblock += 3;
+        const socket = io.sockets.sockets.get(id);
+        if(socket){
+          socket.emit('haveblock', {haveblock:chara.haveblock})
+        }
+        itemtimer = 0;
+      }
     }
   }
-},4200);
+},1050);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -73,6 +82,7 @@ io.on('connection', (socket) => {
   });
   socket.on('gamestart', () => {
   let chara = new Chara(socket.id, 7, 0)
+  itemtimers.set(socket.id,0)
   charas.set(socket.id,chara)
       // WASD入力を受信
   socket.on('playerInput', (data) => {
