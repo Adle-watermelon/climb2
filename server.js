@@ -57,13 +57,13 @@ setInterval(() => {
 //ブロック数アップデート
 setInterval(() => {
   for(const [id,chara] of charas){
-    if(chara.haveblock < 15){chara.haveblock += 3;}
+    if(chara.haveblock == 0){chara.haveblock += 3;}
     const socket = io.sockets.sockets.get(id);
     if(socket){
       socket.emit('haveblock', {haveblock:chara.haveblock})
     }
   }
-},12000);
+},2000);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -155,7 +155,7 @@ io.on('connection', (socket) => {
     }
     if(cansetBlock){
       if(player.haveblock > 0 && chunkManager.getBlock(bx,by) == "air"){
-        chunkManager.setBlock(bx,by,"stone",3.5)
+        chunkManager.setBlock(bx,by,"stone",3.0)
         const block = chunkManager.allgetBlock(bx,by)
         io.emit('setBlock', {bx:bx,by:by,block:block});
         player.haveblock -= 1;

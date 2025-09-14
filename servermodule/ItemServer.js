@@ -24,7 +24,7 @@ export class Item extends ItemCore{
         return this._followingplayer;
     }
     check(chara){
-        if(!this.followingplayer && Math.hypot(this.x - chara.x,this.y - chara.y) <= 1.35 && !this.destroyflag){
+        if(!this.followingplayer && Math.hypot(this.x - chara.x,this.y - chara.y) <= 0.45 && !this.destroyflag){
             this.followingplayer = chara.id;
             chara.haveblock++;
             const socket = Item.io.sockets.sockets.get(chara.id);
