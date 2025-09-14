@@ -72,7 +72,7 @@ setInterval(() => {
       }
     }
   }
-},1050);
+},1200);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
