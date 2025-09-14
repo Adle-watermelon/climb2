@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
             chakblock(Math.floor(chara.x - charawidth/2),by)
           }
           if(miny > chara.y){miny = chara.y}
-          for(const [id,item] of items){item.updatePos(thentime);item.check(chara);}
+          //for(const [id,item] of items){item.updatePos(thentime);item.check(chara);}
         }
         //ランキングチェック
         ranking = insertCharaIntoRanking(ranking,chara)
