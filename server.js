@@ -114,6 +114,16 @@ io.on('connection', (socket) => {
           const nextsnapshot = kss[thenkeystateindex + 1] || null; 
           if(nextsnapshot){if(nextsnapshot.timestamp <= thentime){thenkeystateindex++;thenkeystate = kss[thenkeystateindex];}}
           updatePlayerMovement(chara,thenkeystate.keystate,delta,chunkManager)
+          if(Math.floor(chara.y) - chara.y == 0){
+            const bx = Math.floor(chara.x)
+            const by = Math.floor(chara.y + 0.1)
+            const block = chunkManager.allgetBlock(bx,by)
+            if(block.type == "stone" && block.timer >= 1000){
+              chunkManager.setBlock(bx,by,"stone",3.0)
+              const newblock = chunkManager.allgetBlock(bx,by)
+              io.emit('setBlock', {bx:bx,by:by,block:newblock});
+            }
+          }
           if(miny > chara.y){miny = chara.y}
           for(const [id,item] of items){item.updatePos(thentime);item.check(chara);}
         }
@@ -155,7 +165,7 @@ io.on('connection', (socket) => {
     }
     if(cansetBlock){
       if(player.haveblock > 0 && chunkManager.getBlock(bx,by) == "air"){
-        chunkManager.setBlock(bx,by,"stone",3.0)
+        chunkManager.setBlock(bx,by,"stone",100000)
         const block = chunkManager.allgetBlock(bx,by)
         io.emit('setBlock', {bx:bx,by:by,block:block});
         player.haveblock -= 1;
