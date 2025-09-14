@@ -63,7 +63,7 @@ setInterval(() => {
       socket.emit('haveblock', {haveblock:chara.haveblock})
     }
   }
-},2000);
+},3500);
 ///////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -94,6 +94,14 @@ io.on('connection', (socket) => {
     const chunk = chunkManager.getChunk(data.cx,data.cy)
     socket.emit('chunkResponse',{chunk:chunk,cx:data.cx,cy:data.cy})
   });
+  function chakblock(bx,by){
+                const block = chunkManager.allgetBlock(bx,by)
+            if(block.type == "stone" && block.timer >= 1000){
+              chunkManager.setBlock(bx,by,"stone",1.0)
+              const newblock = chunkManager.allgetBlock(bx,by)
+              io.emit('setBlock', {bx:bx,by:by,block:newblock});
+            }
+  }
   socket.on('checkPlayerPos', (data) => {
     const chara = charas.get(socket.id)
     if(chara.time){
@@ -117,12 +125,9 @@ io.on('connection', (socket) => {
           if(Math.floor(chara.y) - chara.y == 0){
             const bx = Math.floor(chara.x)
             const by = Math.floor(chara.y + 0.1)
-            const block = chunkManager.allgetBlock(bx,by)
-            if(block.type == "stone" && block.timer >= 1000){
-              chunkManager.setBlock(bx,by,"stone",3.0)
-              const newblock = chunkManager.allgetBlock(bx,by)
-              io.emit('setBlock', {bx:bx,by:by,block:newblock});
-            }
+            chakblock(bx,by)
+            chakblock(Math.floor(chara.x + charawidth/2),by)
+            chakblock(Math.floor(chara.x - charawidth/2),by)
           }
           if(miny > chara.y){miny = chara.y}
           for(const [id,item] of items){item.updatePos(thentime);item.check(chara);}
