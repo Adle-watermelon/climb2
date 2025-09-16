@@ -22,7 +22,9 @@ export class CharaCore {
         this.isHoldingJump = false;    // Wキーを押し続けているか
         this.maxAllowedAirTime = 0;    // 許可される最大滞空時間
         this.haveblock = 0;
+        this.OnWall = false;
         this.name = null;
+        this.wallStickTimer = 0;
     }
     getchunkpos(dx = 0,dy = 0){
         const x = this.x + dx;
@@ -39,14 +41,14 @@ export class CharaCore {
     }
     convertCore() {
         const result = new CharaCore(0,0,0);
-        const keys = ["id","x","y","vx","vy","direction","status","OnGround","Jumping","jumpinterval","basey","time","chargingJump","jumpPower","airTime","isHoldingJump","maxAllowedAirTime", "haveblock","name"]
+        const keys = ["id","x","y","vx","vy","direction","status","OnGround","Jumping","jumpinterval","basey","time","chargingJump","jumpPower","airTime","isHoldingJump","maxAllowedAirTime", "haveblock","name","OnWall","wallStickTimer"]
         for (const key of keys) {
             if (key in this) result[key] = this[key];
         }
         return result;
     }
     acopy(chara){
-        const keys = ["id","x","y","vx","vy","direction","status","OnGround","Jumping","jumpinterval","basey","time","chargingJump","jumpPower","airTime","isHoldingJump","maxAllowedAirTime","haveblock","name"]
+        const keys = ["id","x","y","vx","vy","direction","status","OnGround","Jumping","jumpinterval","basey","time","chargingJump","jumpPower","airTime","isHoldingJump","maxAllowedAirTime","haveblock","name","OnWall","wallStickTimer"]
         for (const key of keys) {
             this[key] = chara[key];
         }

@@ -62,7 +62,7 @@ setInterval(() => {
       if(itemtimer < 2){
         if(chara.haveblock == 0){itemtimer++;itemtimers.set(id, itemtimer);}
       } else {
-        chara.haveblock += 3;
+        chara.haveblock += 4;
         const socket = io.sockets.sockets.get(id);
         if(socket){
           socket.emit('haveblock', {haveblock:chara.haveblock})
