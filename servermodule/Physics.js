@@ -1,4 +1,4 @@
-import {size, charaheight, charawidth} from './Constants.js'
+import {charaheight, charawidth} from './Constants.js'
 const G = 0.5;
 const maxvy = 9.0;
 const initialJumpVelocity = 11.0;  // 初期ジャンプ速度（即時）
