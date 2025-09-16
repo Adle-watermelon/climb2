@@ -157,8 +157,13 @@ io.on('connection', (socket) => {
         chara.id = socket.id
         chara.time = data.timestamp
       }else{
-        socket.emit('correctResult', {chara:chara.convertCore()})
-        chara.time = data.timestamp;
+        /*socket.emit('correctResult', {chara:chara.convertCore()})
+        chara.time = data.timestamp;*/
+        let haveblock = chara.haveblock
+        chara.acopy(data.chara)
+        chara.haveblock = haveblock
+        chara.id = socket.id
+        chara.time = data.timestamp
       }
     } else{
       let haveblock = chara.haveblock
