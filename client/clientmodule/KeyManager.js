@@ -18,25 +18,31 @@ export class WASDInputManager {
         this.setupEventListeners();
         console.log('WASD入力管理を初期化しました');
     }
-    
+    // 入力欄にフォーカスがあるかどうかを判定
+    isChatFocused() {
+        const active = document.activeElement;
+        return active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA');
+    }
+
     setupEventListeners() {
         document.addEventListener('keydown', (e) => {
-            // WASDキーのみ処理
+            if (this.isChatFocused()) return; // チャット入力中なら無視
+            
             if (this.targetKeys.includes(e.code)) {
                 this.currentState[e.code] = true;
-                e.preventDefault(); // ブラウザのデフォルト動作を防ぐ
+                e.preventDefault();
             }
         });
         
         document.addEventListener('keyup', (e) => {
-            // WASDキーのみ処理
+            if (this.isChatFocused()) return;
+            
             if (this.targetKeys.includes(e.code)) {
                 this.currentState[e.code] = false;
                 e.preventDefault();
             }
         });
     }
-    
     update() {
         // 各キーの状態変化をチェック
         for (let keyCode of this.targetKeys) {

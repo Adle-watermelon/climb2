@@ -31,7 +31,7 @@ this.knobCircle.endFill();
 this.knobCircle.x = baseX;
 this.knobCircle.y = baseY;
 this.joystickContainer.addChild(this.knobCircle);
-
+this.joystickContainer.zIndex = 99999;
 // イベント設定
 this.joystickContainer.interactive = true;
 this.joystickContainer.on("pointerdown", this.onDown.bind(this));

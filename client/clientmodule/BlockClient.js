@@ -3,9 +3,13 @@ import {size, charaheight, charawidth, synfps} from './Constants.js'
 export class Block {
   static textures = null;
   static cameraContainer = null;
+  static offset = 0;
   static async initialization(cameraContainer,textures){
     Block.cameraContainer = cameraContainer;
     Block.textures = await textures;
+  }
+  static setoffset(offset){
+    Block.offset = offset;
   }
   constructor(type = "air",timer = 0) {
     this.sprite = null;
@@ -57,7 +61,7 @@ export class Block {
   }
   
   update() {
-    const now = Date.now();
+    const now = Date.now() + Block.offset;
     if (this.type === "stone" ) {
       this.hp = (this.timer - (now - this.timestamp)/1000);
       if(this.hp <= 0) {

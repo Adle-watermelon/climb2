@@ -31,7 +31,62 @@ export class Inventory {
         
         this.createUI();
     }
-    
+    // Inventory クラス内
+    startCooldownAnimation(duration = 4000) {
+        if (!this.uiElements) return;
+
+        // 既にアニメ中ならリセット
+        this.endCooldownAnimation();
+
+        const frameSize = size * 2.0;
+
+        // 白い半透明の矩形
+        const overlay = new PIXI.Graphics();
+        overlay.beginFill(0xffffff, 0.5);
+        overlay.drawRect(0, 0, frameSize, frameSize);
+        overlay.endFill();
+        overlay.x = this.x + size*0.2;
+        overlay.y = this.y - size*0.2;
+
+        // 左下基準でスケールが効くように anchor じゃなく pivot を使う
+        overlay.pivot.set(0, frameSize);
+        overlay.scale.y = 0;
+
+        this.uiElements.addChild(overlay);
+        this.cooldownOverlay = overlay;
+
+        // アニメーション
+        const startTime = performance.now();
+        const ticker = PIXI.Ticker.shared;
+
+        const update = () => {
+            if (!this.cooldownOverlay) { // 終了時に止める
+                ticker.remove(update);
+                return;
+            }
+
+            const elapsed = performance.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            overlay.scale.y = progress;
+
+            if (progress >= 1) {
+                // 完全に覆ったらそのまま待機
+                ticker.remove(update);
+            }
+        };
+
+        ticker.add(update);
+    }
+
+    endCooldownAnimation() {
+        if (this.cooldownOverlay) {
+            this.uiElements.removeChild(this.cooldownOverlay);
+            this.cooldownOverlay.destroy();
+            this.cooldownOverlay = null;
+        }
+    }
+
     createUI() {
 
         if (!Inventory.uiContainer) return;
@@ -41,6 +96,7 @@ export class Inventory {
         // フレーム画像
         if (Inventory.textures.has('frame')) {
             const frame = new PIXI.Sprite(Inventory.textures.get('frame'));
+            frame.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             frame.anchor.set(0, 1); // 左下基準
             frame.x = this.x;
             frame.y = this.y;
@@ -52,6 +108,7 @@ export class Inventory {
         if (Inventory.textures.has('stone')) {
             
             const stoneIcon = new PIXI.Sprite(Inventory.textures.get('stone'));
+            stoneIcon.texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
             stoneIcon.anchor.set(0.5, 0.5);
             stoneIcon.x = this.x + size*1.2; // フレーム内の左側
             stoneIcon.y = this.y - size*1.2; // フレーム内中央
